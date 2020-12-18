@@ -1,6 +1,13 @@
 ---
 driver:
-  name: vagrant
+  name: ec2
+  aws_ssh_key_id: chef_access
+  region: ap-southeast-1 # region code of aws
+  availability_zone: ap-southeast-1a # availability_zone of us-west
+  subnet_id: subnet-c3697c8a # subnet-id noted from above steps
+  instance_type: t2.micro # as it is free instance type
+  #image_id: ami-06fb5332e8e3e577a # image id of ubuntu
+  security_group_ids: ["sg-033b6a77c03c8aaf2"]
 
 ## The forwarded_port port feature lets you connect to ports on the VM guest via
 ## localhost on the host.
@@ -21,13 +28,15 @@ provisioner:
   #  product_name: chef
   #  product_version: 15
 
-verifier:
-  name: inspec
-
+transport:
+  ssh_key: "./chef_access.pem"
 platforms:
   - name: ubuntu-18.04
-  - name: centos-7
-
+    driver:
+      image_id: "ami-06fb5332e8e3e577a"
+    transport:
+      username: "ubuntu"
+  #- name: centos-7
 suites:
   - name: default
     run_list:
